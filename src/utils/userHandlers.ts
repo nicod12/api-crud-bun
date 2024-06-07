@@ -10,8 +10,6 @@ const UserSchema = new mongoose.Schema({
 const UserModel = mongoose.model("User", UserSchema);
 
 
-let users: User[] = [];
-
 export const handleGetAllUsers  = async  () => {
     const users = await UserModel.find({});
     return new Response(JSON.stringify(users), {
