@@ -1,89 +1,55 @@
 
-import mongoose from 'mongoose';
-
-const UserSchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true }
-});
-
-
-
-const UserModel = mongoose.model("User", UserSchema);
-
-
-
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
-    'Access-Control-Allow-Headers': '*',
-};
-
+import { Types } from 'mongoose';
+import UserModel from '../models/User';
 
 export const handleGetAllUsers = async () => {
-    const users = await UserModel.find({});
-    return new Response(JSON.stringify(users), {
-        status: 200,
-        headers: corsHeaders,
-    });
-}
-
-export const handleGetUserById = async (id: string) => {
-    const user = await UserModel.findById(id);
-
-    if (!user) {
-        return new Response('User not found', {
-            status: 404,
-            headers: corsHeaders,
-        });
+    try {
+        const users = await UserModel.find();
+        return users;
+    } catch (error) {
+        console.error('Error getting users:', error);
+        return [];
     }
+};
 
-    return new Response(
-        JSON.stringify(user), {
-            status: 200,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-}
-
-export const handleCreateUser = async (username: string, email: string, password: string) => {
-    const newUser = new UserModel({ username, email, password });
-
-    await newUser.save();
-
-    return new Response(JSON.stringify(newUser), {
-        status: 201,
-        headers: corsHeaders,
-    });
-}
-
-export const handleUpdateUser = async (id: string, username: string, email: string, password: string) => {
-    const user = await UserModel.findByIdAndUpdate(id, { username, email, password }, { new: true });
-
-    if (!user) {
-        return new Response("User Not Found", {
-            status: 404,
-            headers: corsHeaders,
-        });
+export const handleGetUserById = async (id:string) => {
+    try {
+        const user = await UserModel.findById(id);
+        return user;
+    } catch (error) {
+        console.error('Error getting user by ID:', error);
+        return null;
     }
+};
 
-    return new Response("User Updated", {
-        status: 200,
-        headers: corsHeaders,
-    });
-}
-
-export const handleDeleteUser = async (id: string) => {
-    const user = await UserModel.findByIdAndDelete(id);
-
-    if (!user) {
-        return new Response("User Not Found", {
-            status: 404,
-            headers: corsHeaders,
-        });
+export const handleCreateUser = async (username:string, email:string, password:string) => {
+    try {
+        const newUser = new UserModel({ username, email, password });
+        await newUser.save();
+        return newUser;
+    } catch (error) {
+        console.error('Error creating user:', error);
+        return null;
     }
+};
 
-    return new Response("User Deleted", {
-        status: 200,
-        headers: corsHeaders,
-    });
-}
+export const handleUpdateUser = async (id:string, username:string, email:string, password:string) => {
+    try {
+        const user = await UserModel.findByIdAndUpdate(id, { username, email, password }, { new: true });
+        return user;
+    } catch (error) {
+        console.error('Error updating user:', error);
+        return null;
+    }
+};
+
+export const handleDeleteUser = async (id:string) => {
+    try {
+        const user = await UserModel.findByIdAndDelete(id);
+        return user;
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        return null;
+    }
+};
+s
