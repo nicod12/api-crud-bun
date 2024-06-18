@@ -12,13 +12,18 @@ export const handleGetAllUsers = async () => {
     }
 };
 
-export const handleGetUserById = async (id:string) => {
+export const handleGetUserById = async (id: string): Promise<Response> => {
     try {
-        const user = await UserModel.findById(id);
-        return user;
+      const user = await UserModel.findById(id);
+      if (!user) {
+        return new Response('User Not Found', { status: 404 });
+      }
+      return new Response(JSON.stringify(user), {
+        headers: { 'Content-Type': 'application/json' },
+      });
     } catch (error) {
-        console.error('Error getting user by ID:', error);
-        return null;
+      console.error('Error getting user by ID:', error);
+      return new Response('Internal Server Error', { status: 500 });
     }
 };
 
@@ -52,4 +57,3 @@ export const handleDeleteUser = async (id:string) => {
         return null;
     }
 };
-s
