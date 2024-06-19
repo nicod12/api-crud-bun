@@ -48,7 +48,7 @@ export default (app: any) => {
     });
 };
 
-// Type guard to check if `error` is of type HttpError
+
 function isHttpError(error: any): error is { status: number, message?: string } {
   return typeof error === 'object' && error !== null && 'status' in error;
 }
